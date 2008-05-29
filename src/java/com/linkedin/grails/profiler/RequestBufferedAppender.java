@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class RequestBufferedAppender implements ProfilerAppender {
     /** Attribute name for the request info. */
-    private static final String INFO_ATTR = "com.linkedin.grails.profile.HtmlAppenderInfo";
+    private static final String INFO_ATTR = "com.linkedin.grails.profile.BufferedAppenderInfo";
 
     /**
      * Logs the entry to a StringBuilder, indenting the message based
