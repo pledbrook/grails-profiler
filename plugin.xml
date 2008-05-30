@@ -1,0 +1,10 @@
+<plugin name='profiler' version='0.1'>
+  <author>Peter Ledbrook</author>
+  <authorEmail>peter@g2one.com</authorEmail>
+  <title>Profiles a Grails application on demand.</title>
+  <description>This plugin allows users to profile their applications on a per-request basis, logging how long requests, controller actions, service method calls, and others take.
+</description>
+  <resources>
+    <resource>ProfilerTagLib</resource>
+  </resources>
+</plugin>
