@@ -117,7 +117,7 @@ calls, and others take.
             def filterMapping = webXml.'filter-mapping'.find { it.'filter-name'.text() == "charEncodingFilter" }
             filterMapping + {
                 'filter-mapping' {
-                    'filter-name'('profilerFilter')
+                    'filter-name'("profilerFilter")
                     'url-pattern'("/*")
                 }
             }

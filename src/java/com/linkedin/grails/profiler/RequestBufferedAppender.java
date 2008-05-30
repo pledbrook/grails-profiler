@@ -23,20 +23,10 @@ public class RequestBufferedAppender implements ProfilerAppender {
      * If this is called outside of a request, nothing happens.
      */
     public void logEntry(String label, Class clazz, String name, long entryTime) {
-        GrailsWebRequest webRequest = getWebRequest();
-        if (webRequest != null) {
-            // Get the buffer and other info for this request.
-            Object infoAttr = webRequest.getAttribute(INFO_ATTR, RequestAttributes.SCOPE_REQUEST);
-            if (infoAttr == null) {
-                // There is no stored info yet, so create it and add
-                // it to the request as an attribute.
-                infoAttr = new RequestInfo();
-                webRequest.setAttribute(INFO_ATTR, infoAttr, RequestAttributes.SCOPE_REQUEST);
-            }
-
-            // Mark the start time, log the entry, and bump the indent
-            // level.
-            RequestInfo info = (RequestInfo) infoAttr;
+        // Mark the start time, log the entry, and bump the indent
+        // level.
+        RequestInfo info = getRequestInfo();
+        if (info != null) {
             info.logStart(entryTime);
             info.log("Entering " + getIdentity(label, clazz, name));
             info.incrementIndent();
@@ -51,13 +41,9 @@ public class RequestBufferedAppender implements ProfilerAppender {
      * happens.
      */
     public void logExit(String label, Class clazz, String name, long exitTime) {
-        GrailsWebRequest webRequest = getWebRequest();
-        if (webRequest != null) {
-            // Get the buffer and other info for this request. This
-            // assumes that the info is already there since this method
-            // must be called after a corresponding entry log.
-            RequestInfo info = (RequestInfo) webRequest.getAttribute(INFO_ATTR, RequestAttributes.SCOPE_REQUEST);
-
+        // Get the buffer and other info for this request.
+        RequestInfo info = getRequestInfo();
+        if (info != null) {
             // Calculate the total time taken.
             long totalTime = exitTime - info.getStartTime();
 
@@ -65,6 +51,20 @@ public class RequestBufferedAppender implements ProfilerAppender {
             // time taken).
             info.decrementIndent();
             info.log("Exiting " + getIdentity(label, clazz, name) + "   (Time: " + totalTime + ")");
+        }
+    }
+
+    /**
+     * Adds some text before the start of the current logging output.
+     * Used mainly to include output from previous requests. An extra
+     * new-line is added after the given text to separate it from the
+     * current log output.
+     * @param text The text to prepend to the log output.
+     */
+    public void prependOutput(String text) {
+        RequestInfo info = getRequestInfo();
+        if (info != null) {
+            info.prependText(text + '\n');
         }
     }
 
@@ -91,6 +91,32 @@ public class RequestBufferedAppender implements ProfilerAppender {
     private GrailsWebRequest getWebRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         return requestAttributes == null ? null : (GrailsWebRequest) requestAttributes;
+    }
+
+    /**
+     * Gets the RequestInfo instance for the current request. If this
+     * method is called outside of a request, it returns <code>null</code>.
+     * Otherwise, it returns a RequestInfo instance, creating one if
+     * this is the first time the method has been called for the current
+     * request.
+     */
+    private RequestInfo getRequestInfo() {
+        RequestInfo info = null;
+        GrailsWebRequest webRequest = getWebRequest();
+        if (webRequest != null) {
+            // Get the buffer and other info for this request.
+            Object infoAttr = webRequest.getAttribute(INFO_ATTR, RequestAttributes.SCOPE_REQUEST);
+            if (infoAttr == null) {
+                // There is no stored info yet, so create it and add
+                // it to the request as an attribute.
+                infoAttr = new RequestInfo();
+                webRequest.setAttribute(INFO_ATTR, infoAttr, RequestAttributes.SCOPE_REQUEST);
+            }
+
+            info = (RequestInfo) infoAttr;
+        }
+
+        return info;
     }
 
     /**
@@ -172,6 +198,13 @@ public class RequestBufferedAppender implements ProfilerAppender {
          */
         public String getOutput() {
             return this.buffer.toString();
+        }
+
+        /**
+         * Prepends the given text to the output buffer.
+         */
+        public void prependText(String text) {
+            this.buffer.insert(0, text);
         }
     }
 }
