@@ -1,9 +1,6 @@
 package com.linkedin.grails.profiler;
 
-import org.codehaus.groovy.grails.web.servlet.FlashScope;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,6 +22,15 @@ public class ProfilerFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        // Let's start with the Spring ApplicationContext for this web
+        // app.
+        WebApplicationContext appContext =
+                WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+
+        // Retrieve the bean that determines whether profiling should
+        // occur for the current request or not.
+        ProfilerCondition conditionBean = (ProfilerCondition) appContext.getBean("profilerCondition");
+
         // Check for any log output stored in the session. If yes, we
         // continue profiling regardless. Note that we don't create
         // the session - it's best to leave this until we know that
@@ -43,15 +49,7 @@ public class ProfilerFilter extends OncePerRequestFilter {
         }
 
         // Determine whether we should profile this request.
-        boolean doProfiling = false;
-        String profilerParam = request.getParameter("profiler");
-
-        if (output != null) {
-            doProfiling = true;
-        }
-        if (profilerParam != null && (profilerParam.equals("on") || profilerParam.equals("1"))) {
-            doProfiling = true;
-        }
+        boolean doProfiling = (output != null) || conditionBean.doProfiling();
 
         // If we are profiling, mark the request as such and log the
         // start time for this request.
@@ -63,8 +61,6 @@ public class ProfilerFilter extends OncePerRequestFilter {
 
             // Fetch the currently configured logger for profiling from
             // the application context.
-            WebApplicationContext appContext =
-                    WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             profiler = (ProfilerLog) appContext.getBean("profilerLog");
 
             // Check whether there is any saved output from a previous

@@ -21,22 +21,37 @@ calls, and others take.
         def disableProfiling = application.config.grails.profiler.disable
 
         if (!disableProfiling) {
-            // First set up the test appender
+            // First set up the appender that logs via Commons Logging.
             loggingAppender(LoggingAppender) { bean ->
                 bean.scope = "prototype"
             }
 
+            // This stores logs in a buffer that can be retrieved at
+            // any time. It only works if used within a web request,
+            // but it is safe to use outside of a request - it just
+            // does nothing in that case.
             bufferedAppender(RequestBufferedAppender)
+
+            // This is the condition bean that determines whether
+            // profiling should occur or not. The default bean used
+            // here simply checks the "profiler" request parameter.
+            profilerCondition(ParamProfilerCondition) {
+                paramName = "profiler"
+                values = [ "on", "1", "true" ] as Set
+            }
 
             // Now the logger.
             profilerLog(DefaultProfilerLog) {
                 appenderNames = [ "loggingAppender", "bufferedAppender" ]
             }
 
+            // Interceptor for profiling service method invocations.
             profilerMethodInterceptor(ProfilerMethodInterceptor) {
                 profiler = profilerLog
             }
 
+            // Spring HandlerInterceptor for profiling controllers and
+            // views.
             profilerHandlerInterceptor(ProfilerHandlerInterceptor) {
                 profiler = profilerLog
             }
