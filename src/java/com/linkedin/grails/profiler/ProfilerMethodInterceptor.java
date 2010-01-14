@@ -26,10 +26,13 @@ public class ProfilerMethodInterceptor implements MethodInterceptor {
      * method.
      */
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+        // Not interested in calls to getMetaClass().
+        String methodName = methodInvocation.getMethod().getName();
+        if (methodName.equals("getMetaClass")) return methodInvocation.proceed();
+
         // Handle the case where the target method is Groovy's "invokeMethod".
         // In this case, it is better to log the target of "invokeMethod",
         // rather than "invokeMethod" itself.
-        String methodName = methodInvocation.getMethod().getName();
         if (methodName.equals("invokeMethod") &&
                 methodInvocation.getMethod().getParameterTypes()[0] == String.class) {
             methodName = (String) methodInvocation.getArguments()[0];
