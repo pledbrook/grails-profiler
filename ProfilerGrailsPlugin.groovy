@@ -50,13 +50,19 @@ calls, and others take.
                 profiler = profilerLog
             }
 
-            // Spring HandlerInterceptor for profiling controllers and
-            // views.
+            // Spring HandlerInterceptor for profiling controllers and views.
             profilerHandlerInterceptor(ProfilerHandlerInterceptor) {
                 profiler = profilerLog
             }
 
-            grailsUrlHandlerMapping.interceptors << profilerHandlerInterceptor
+            if (springConfig.containsBean("grailsUrlHandlerMapping")) {
+                // Grails 1.1 and below
+                grailsUrlHandlerMapping.interceptors << profilerHandlerInterceptor
+            }
+            else {
+                // Grails 1.2 and above
+                [annotationHandlerMapping, controllerHandlerMappings]*.interceptors << profilerHandlerInterceptor
+            }
 
             // We do some magic with the service beans: the existing bean
             // definitions are replaced with proxy beans
