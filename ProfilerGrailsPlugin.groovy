@@ -5,7 +5,7 @@ import org.springframework.aop.framework.ProxyFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 class ProfilerGrailsPlugin {
-    def version = 0.1
+    def version = "0.2"
     def dependsOn = [ controllers: "1.0 > *" ]
     def loadAfter = [ "services" ]
     def title = "Profiles a Grails application on demand."
