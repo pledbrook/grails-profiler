@@ -11,6 +11,7 @@ public class ProfilingClosureWrapper extends Closure {
     private Closure target;
     private ProfilerLog profiler;
     private String name;
+	private Class targetClass;
 
     /**
      * Creates a new instance that wraps the target closure and sends
@@ -20,11 +21,12 @@ public class ProfilingClosureWrapper extends Closure {
      * @param name A name to identify the closure in the profiling
      * events.
      */
-    public ProfilingClosureWrapper(Closure closure, ProfilerLog profiler, String name) {
-        super(closure.getOwner(), closure.getThisObject());
+    public ProfilingClosureWrapper(Class targetClass, Closure closure, ProfilerLog profiler, String name) {
+        super(closure.getDelegate(), closure.getDelegate());
         this.target = closure;
         this.profiler = profiler;
         this.name = name;
+		this.targetClass = targetClass;
     }
 
     /**
@@ -32,13 +34,13 @@ public class ProfilingClosureWrapper extends Closure {
      * call.
      */
     public Object call(Object[] objects) {
-        this.profiler.logEntry(getThisObject().getClass(), this.name);
+        this.profiler.logEntry(targetClass, this.name);
 
         try {
             return this.target.call(objects);
         }
         finally {
-            this.profiler.logExit(getThisObject().getClass(), this.name);
+            this.profiler.logExit(targetClass, this.name);
         }
     }
 
@@ -56,7 +58,7 @@ public class ProfilingClosureWrapper extends Closure {
     }
 
     public Closure curry(Object[] objects) {
-        return new ProfilingClosureWrapper(this.target.curry(objects), this.profiler, this.name);
+        return new ProfilingClosureWrapper(targetClass, this.target.curry(objects), this.profiler, this.name);
     }
 
     public boolean isCase(Object o) {

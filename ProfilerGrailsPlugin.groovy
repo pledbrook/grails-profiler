@@ -5,7 +5,7 @@ import org.springframework.aop.framework.ProxyFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 class ProfilerGrailsPlugin {
-    def version = "0.2"
+    def version = "0.3"
     def dependsOn = [ controllers: "1.0 > *" ]
     def loadAfter = [ "services" ]
     def title = "Profiles a Grails application on demand."
@@ -158,7 +158,7 @@ calls, and others take.
             if (mp) {
                 def result = mp.getProperty(delegate)
                 if (result instanceof Closure) {
-                    result = new ProfilingClosureWrapper(result, ctx.getBean("profilerLog"), propName)
+                    result = new ProfilingClosureWrapper(controller, result, ctx.getBean("profilerLog"), propName)
                 }
 
                 return result
