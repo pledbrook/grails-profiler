@@ -48,7 +48,7 @@ public class ParamProfilerCondition implements ProfilerCondition {
 	 * @param values the values
 	 */
 	public void setValues(Set<String> values) {
-		values = new HashSet<String>(values);
+		this.values = new HashSet<String>(values);
 	}
 
 	/**
