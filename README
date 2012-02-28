@@ -1,0 +1,37 @@
+# Profiler Plugin
+
+Investigating the performance of an application is an important step in improving its usability. The Profiler Plugin makes it easy to collect timing information for several aspects of an application:
+
+* Requests
+* Controller actions
+* Service methods
+* View generation
+
+## Installation
+
+grails install-plugin profiler
+
+## How to use it
+
+Once the plugin is installed, all you need to do to profile a request is add the "profiler=on" or "profiler=1" parameter to it. For example, to profile a simple GET request:
+
+http://localhost:8080/myapp/book/list?profiler=1
+
+You may not see any profiling information yet because it depends on your Log4J configuration. All profiling information is logged at the INFO level to the "com.linkedin.grails.ProfilerPlugin" logger, so this simple configuration will have the profiling messages appear in your console:
+
+    log4j {
+        ...
+        logger {
+            ...
+            com.linkedin.grails = "info"
+        }
+        ...
+    }
+
+It is also possible to place the profiling information in your HTML pages by using this GSP tag:
+
+    <g:profilerOutput />
+
+This will simply write out the profiling information collected so far for the current request. For best results it should be included in the layout inside an HTML comment. If you use it directly within a view, the profiling information will lack the timing for the view generation itself.
+
+For more information, go to the [plugin portal page](http://grails.org/plugin/profiler).
