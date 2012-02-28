@@ -12,13 +12,19 @@ import org.springframework.aop.framework.ProxyFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 class ProfilerGrailsPlugin {
-	def version = "0.3"
+	def version = "0.4"
+	def grailsVersion = "1.3.3 > *"
 	def loadAfter = ["services"]
 	def title = "Profile Plugin"
 	def author = "Peter Ledbrook"
 	def authorEmail = "peter@g2one.com"
 	def description = "Profile applications on a per-request basis, logging how long requests, controller actions, service method calls, and others take."
 	def documentation = "http://grails.org/plugin/profiler"
+
+	def license = 'APACHE'
+	def developers = [[name: "Burt Beckwith", email: "beckwithb@vmware.com"]]
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPPROFILER']
+	def scm = [url: 'http://svn.codehaus.org/grails-plugins/grails-profiler']
 
 	def getWebXmlFilterOrder() {
 		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
@@ -65,14 +71,7 @@ class ProfilerGrailsPlugin {
 			profiler = profilerLog
 		}
 
-		if (springConfig.containsBean("grailsUrlHandlerMapping")) {
-			// Grails 1.1 and below
-			grailsUrlHandlerMapping.interceptors << profilerHandlerInterceptor
-		}
-		else {
-			// Grails 1.2 and above
-			[annotationHandlerMapping, controllerHandlerMappings]*.interceptors << profilerHandlerInterceptor
-		}
+		[annotationHandlerMapping, controllerHandlerMappings]*.interceptors << profilerHandlerInterceptor
 
 		// We do some magic with the service beans: the existing bean
 		// definitions are replaced with proxy beans
