@@ -7,105 +7,121 @@ import groovy.lang.Closure;
  * calls to it. This wrapper can be used in place of the target closure,
  * so it can be inserted transparently.
  */
+@SuppressWarnings("rawtypes")
 public class ProfilingClosureWrapper extends Closure {
-    private Closure target;
-    private ProfilerLog profiler;
-    private String name;
-	private Class targetClass;
+	private static final long serialVersionUID = 1;
 
-    /**
-     * Creates a new instance that wraps the target closure and sends
-     * profiling events to the given profiler log.
-     * @param closure The target closure to wrap.
-     * @param profiler A profiler log to send profiling events to.
-     * @param name A name to identify the closure in the profiling
-     * events.
-     */
-    public ProfilingClosureWrapper(Class targetClass, Closure closure, ProfilerLog profiler, String name) {
-        super(closure.getDelegate(), closure.getDelegate());
-        this.target = closure;
-        this.profiler = profiler;
-        this.name = name;
+	private Closure target;
+	private ProfilerLog profiler;
+	private String name;
+	private Class<?> targetClass;
+
+	/**
+	 * Creates a new instance that wraps the target closure and sends
+	 * profiling events to the given profiler log.
+	 * @param targetClass the target class
+	 * @param closure The target closure to wrap.
+	 * @param profiler A profiler log to send profiling events to.
+	 * @param name A name to identify the closure in the profiling events.
+	 */
+	public ProfilingClosureWrapper(Class<?> targetClass, Closure closure, ProfilerLog profiler, String name) {
+		super(closure.getDelegate(), closure.getDelegate());
+		target = closure;
+		this.profiler = profiler;
+		this.name = name;
 		this.targetClass = targetClass;
-    }
+	}
 
-    /**
-     * This is the important one: logs entry and exit of the closure
-     * call.
-     */
-    public Object call(Object[] objects) {
-        this.profiler.logEntry(targetClass, this.name);
+	// This is the important one: logs entry and exit of the closure call.
+	@Override
+	public Object call(Object[] objects) {
+		profiler.logEntry(targetClass, name);
 
-        try {
-            return this.target.call(objects);
-        }
-        finally {
-            this.profiler.logExit(targetClass, this.name);
-        }
-    }
+		try {
+			return target.call(objects);
+		}
+		finally {
+			profiler.logExit(targetClass, name);
+		}
+	}
 
-    /**
-     * Compares based on identities, but unlike the standard implementation
-     * this one will return <code>true</code> if the given object is the
-     * target closure for this wrapper as well.
-     */
-    public boolean equals(Object obj) {
-        return this == obj || this.target == obj;
-    }
+	/**
+	 * Compares based on identities, but unlike the standard implementation
+	 * this one will return <code>true</code> if the given object is the
+	 * target closure for this wrapper as well.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return this == obj || target == obj;
+	}
 
-    public int hashCode() {
-        return this.target.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return target.hashCode();
+	}
 
-    public Closure curry(Object[] objects) {
-        return new ProfilingClosureWrapper(targetClass, this.target.curry(objects), this.profiler, this.name);
-    }
+	@Override
+	public Closure curry(Object[] objects) {
+		return new ProfilingClosureWrapper(targetClass, target.curry(objects), profiler, name);
+	}
 
-    public boolean isCase(Object o) {
-        return this.target.isCase(o);
-    }
+	@Override
+	public boolean isCase(Object o) {
+		return target.isCase(o);
+	}
 
-    public Closure asWritable() {
-        return this.target.asWritable();
-    }
+	@Override
+	public Closure asWritable() {
+		return target.asWritable();
+	}
 
-    public Object getProperty(String property) {
-        return this.target.getProperty(property);
-    }
+	@Override
+	public Object getProperty(String property) {
+		return target.getProperty(property);
+	}
 
-    public void setProperty(String s, Object o) {
-        this.target.setProperty(s, o);
-    }
+	@Override
+	public void setProperty(String s, Object o) {
+		target.setProperty(s, o);
+	}
 
-    public int getMaximumNumberOfParameters() {
-        return this.target.getMaximumNumberOfParameters();
-    }
+	@Override
+	public int getMaximumNumberOfParameters() {
+		return target.getMaximumNumberOfParameters();
+	}
 
-    public Class[] getParameterTypes() {
-        return this.target.getParameterTypes();
-    }
+	@Override
+	public Class<?>[] getParameterTypes() {
+		return target.getParameterTypes();
+	}
 
-    public Object getDelegate() {
-        return this.target.getDelegate();
-    }
+	@Override
+	public Object getDelegate() {
+		return target.getDelegate();
+	}
 
-    public void setDelegate(Object o) {
-        this.target.setDelegate(o);
-    }
+	@Override
+	public void setDelegate(Object o) {
+		target.setDelegate(o);
+	}
 
-    public int getDirective() {
-        return this.target.getDirective();
-    }
+	@Override
+	public int getDirective() {
+		return target.getDirective();
+	}
 
-    public void setDirective(int i) {
-        this.target.setDirective(i);
-    }
+	@Override
+	public void setDirective(int i) {
+		target.setDirective(i);
+	}
 
-    public int getResolveStrategy() {
-        return this.target.getResolveStrategy();
-    }
+	@Override
+	public int getResolveStrategy() {
+		return target.getResolveStrategy();
+	}
 
-    public void setResolveStrategy(int i) {
-        this.target.setResolveStrategy(i);
-    }
+	@Override
+	public void setResolveStrategy(int i) {
+		target.setResolveStrategy(i);
+	}
 }
