@@ -8,4 +8,8 @@ grails.project.dependency.resolution = {
 	repositories {
 		grailsCentral()
 	}
+
+	plugins {
+		compile ':webxml:1.4.1'
+	}
 }

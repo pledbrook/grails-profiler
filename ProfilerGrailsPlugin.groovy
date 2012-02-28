@@ -20,6 +20,11 @@ class ProfilerGrailsPlugin {
 	def description = "Profile applications on a per-request basis, logging how long requests, controller actions, service method calls, and others take."
 	def documentation = "http://grails.org/plugin/profiler"
 
+	def getWebXmlFilterOrder() {
+		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
+		[profilerFilter: FilterManager.URL_MAPPING_POSITION - 100]
+	}
+
 	def doWithSpring = {
 		def disableProfiling = application.config.grails.profiler.disable
 		if (disableProfiling) {
