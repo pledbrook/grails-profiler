@@ -1,4 +1,11 @@
-import com.linkedin.grails.profiler.*
+import com.linkedin.grails.profiler.DefaultProfilerLog
+import com.linkedin.grails.profiler.LoggingAppender
+import com.linkedin.grails.profiler.ParamProfilerCondition
+import com.linkedin.grails.profiler.ProfilerFilter
+import com.linkedin.grails.profiler.ProfilerHandlerInterceptor
+import com.linkedin.grails.profiler.ProfilerMethodInterceptor
+import com.linkedin.grails.profiler.ProfilingClosureWrapper
+import com.linkedin.grails.profiler.RequestBufferedAppender
 
 import org.codehaus.groovy.grails.commons.spring.BeanConfiguration
 import org.springframework.aop.framework.ProxyFactoryBean
@@ -11,6 +18,7 @@ class ProfilerGrailsPlugin {
 	def author = "Peter Ledbrook"
 	def authorEmail = "peter@g2one.com"
 	def description = "Profile applications on a per-request basis, logging how long requests, controller actions, service method calls, and others take."
+	def documentation = "http://grails.org/plugin/profiler"
 
 	def doWithSpring = {
 		def disableProfiling = application.config.grails.profiler.disable
@@ -18,7 +26,7 @@ class ProfilerGrailsPlugin {
 			return
 		}
 
-		// First set up the appender that logs via Commons Logging.
+		// First set up the appender that logs via Slf4j.
 		loggingAppender(LoggingAppender) { bean ->
 			bean.scope = "prototype"
 		}
@@ -34,12 +42,12 @@ class ProfilerGrailsPlugin {
 		// here simply checks the "profiler" request parameter.
 		profilerCondition(ParamProfilerCondition) {
 			paramName = "profiler"
-			values = [ "on", "1", "true" ] as Set
+			values = ["on", "1", "true"] as Set
 		}
 
 		// Now the logger.
 		profilerLog(DefaultProfilerLog) {
-			appenderNames = [ "loggingAppender", "bufferedAppender" ]
+			appenderNames = ["loggingAppender", "bufferedAppender"]
 		}
 
 		// Interceptor for profiling service method invocations.
@@ -64,8 +72,8 @@ class ProfilerGrailsPlugin {
 		// We do some magic with the service beans: the existing bean
 		// definitions are replaced with proxy beans
 		if (manager?.hasGrailsPlugin("services")) {
-			application.serviceClasses.each { serviceClass ->
-				def serviceName = serviceClass.propertyName
+			for (serviceClass in application.serviceClasses) {
+				String serviceName = serviceClass.propertyName
 				BeanConfiguration beanConfig = springConfig.getBeanConfig(serviceName)
 
 				// If we're dealing with a TransactionProxyFactoryBean,
@@ -92,7 +100,7 @@ class ProfilerGrailsPlugin {
 						// interface - not what we want!
 						autodetectInterfaces = false
 						targetName = "${serviceName}Profiled"
-						interceptorNames = [ "profilerMethodInterceptor" ]
+						interceptorNames = ["profilerMethodInterceptor"]
 					}
 				}
 			}
@@ -127,7 +135,7 @@ class ProfilerGrailsPlugin {
 		filterDef[filterDef.size() - 1] + {
 			'filter' {
 				'filter-name'('profilerFilter')
-				'filter-class'('com.linkedin.grails.profiler.ProfilerFilter')
+				'filter-class'(ProfilerFilter.name)
 			}
 		}
 

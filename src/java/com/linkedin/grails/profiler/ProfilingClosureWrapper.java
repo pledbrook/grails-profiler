@@ -34,7 +34,7 @@ public class ProfilingClosureWrapper extends Closure {
 
 	// This is the important one: logs entry and exit of the closure call.
 	@Override
-	public Object call(Object[] objects) {
+	public Object call(Object... objects) {
 		profiler.logEntry(targetClass, name);
 
 		try {
@@ -61,7 +61,7 @@ public class ProfilingClosureWrapper extends Closure {
 	}
 
 	@Override
-	public Closure curry(Object[] objects) {
+	public Closure curry(Object... objects) {
 		return new ProfilingClosureWrapper(targetClass, target.curry(objects), profiler, name);
 	}
 
