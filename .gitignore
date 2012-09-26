@@ -1,2 +1,4 @@
+grails-profiler-*.zip*
 docs/
+target/
 web-app/

@@ -12,19 +12,21 @@ import org.springframework.aop.framework.ProxyFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 class ProfilerGrailsPlugin {
-	def version = "0.4"
+	def version = "0.4.1"
 	def grailsVersion = "1.3.3 > *"
-	def loadAfter = ["services"]
+	def loadAfter = ["services", "controllers"]
 	def title = "Profile Plugin"
 	def author = "Peter Ledbrook"
-	def authorEmail = "peter@g2one.com"
-	def description = "Profile applications on a per-request basis, logging how long requests, controller actions, service method calls, and others take."
+	def authorEmail = "p.ledbrook@cacoethes.co.uk"
+	def description = """\
+Profile applications on a per-request basis, logging how \
+long requests, controller actions and service method calls take."""
 	def documentation = "http://grails.org/plugin/profiler"
 
 	def license = 'APACHE'
 	def developers = [[name: "Burt Beckwith", email: "beckwithb@vmware.com"]]
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPPROFILER']
-	def scm = [url: 'http://svn.codehaus.org/grails-plugins/grails-profiler']
+	def scm = [url: 'https://github.com/pledbrook/grails-profiler']
 
 	def getWebXmlFilterOrder() {
 		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
