@@ -79,7 +79,7 @@ This is the main bean. It sends log messages to all registered appenders while p
   <td>Logs entry to an action/method/whatever.</td>
  </tr>
  <tr>
-  <td>*logExit(Class, String)</tt></td>
+  <td><tt>logExit(Class, String)</tt></td>
   <td>Logs exit from an action/method/whatever. There should be one call to <tt>logExit()</tt> for every <tt>logEntry()</tt>.</td>
  </tr>
 </table>
