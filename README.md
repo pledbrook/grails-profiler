@@ -53,8 +53,8 @@ The plugin is designed around a set of Spring beans that can be used directly fr
 This bean implements the `com.linkedin.grails.profiler.ProfilerCondition` interface and determines whether profiling is active for the current request or not. The default implementation checks the "profiler" parameter, but you can provide your own implementation in resource.groovy for example.
 
 <table>
- <tr><th>*Method*</th><th>*Description*</th></tr>
- <tr><td>*doProfiling()*</td><td>Returns `true` if profiling should be enabled for the current request, otherwise `false`.</td></tr>
+ <tr><th>Method</th><th>Description</th></tr>
+ <tr><td><tt>doProfiling()</tt></td><td>Returns <tt>true</tt> if profiling should be enabled for the current request, otherwise <tt>false</tt>.</td></tr>
 </table>
 
 ### profilerLog
@@ -62,25 +62,25 @@ This bean implements the `com.linkedin.grails.profiler.ProfilerCondition` interf
 This is the main bean. It sends log messages to all registered appenders while profiling is active. Otherwise it does nothing.
 
 <table>
- <tr><th>*Method*</th><th>*Description*</th></tr>
+ <tr><th>Method</th><th>Description</th></tr>
  <tr>
-  <td>*startProfiling(String)*</td>
+  <td><tt>startProfiling(String)</tt></td>
   <td>Starts the profiler and assigns the given label to the log messages.
  <tr>
-  <td>*stopProfiling()*</td>
+  <td><tt>stopProfiling()</tt></td>
   <td>Stops the profiler.</td>
  </tr>
  <tr>
-  <td>*isProfiling()*</td>
-  <td>Returns `true` if the profiler is currently active, otherwise `false`.</td>
+  <td><tt>isProfiling()</tt></td>
+  <td>Returns <tt>true</tt> if the profiler is currently active, otherwise <tt>false</tt>.</td>
  </tr>
  <tr>
-  <td>*logEntry(Class, String)*</td>
+  <td><tt>logEntry(Class, String)</tt></td>
   <td>Logs entry to an action/method/whatever.</td>
  </tr>
  <tr>
-  <td>*logExit(Class, String)*</td>
-  <td>Logs exit from an action/method/whatever. There should be one call to `logExit()` for every `logEntry()`.</td>
+  <td>*logExit(Class, String)</tt></td>
+  <td>Logs exit from an action/method/whatever. There should be one call to <tt>logExit()</tt> for every <tt>logEntry()</tt>.</td>
  </tr>
 </table>
 
@@ -89,7 +89,7 @@ This is the main bean. It sends log messages to all registered appenders while p
 A special appender that stores its log messages in a buffer so that it can be retrieved from code. Inject the bean into your own and get the output whenever you like!
 
 <table>
- <tr><th>*Method*</th><th>*Description*</th></tr>
- <tr><td>*getOutput()*</td><td>Returns the log output currently stored in this appender's buffer.</td></tr>
+ <tr><th>Method</th><th>Description</th></tr>
+ <tr><td><tt>getOutput()</tt></td><td>Returns the log output currently stored in this appender's buffer.</td></tr>
 </table>
 
