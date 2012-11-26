@@ -1,6 +1,6 @@
 grails-profiler-*.zip*
 docs/
 target/
-web-app/
+/web-app/
 *.iml
 .idea/
