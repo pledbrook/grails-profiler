@@ -37,7 +37,8 @@ public class ProfilerMethodInterceptor implements MethodInterceptor {
 		}
 
 		// Log method entry.
-		profiler.logEntry(methodInvocation.getThis().getClass(), methodName);
+        Class<?> clazz = ClassUtil.getRealClass(methodInvocation.getThis().getClass());
+		profiler.logEntry(clazz, methodName);
 
 		try {
 			// Actually call the target method.
@@ -45,7 +46,7 @@ public class ProfilerMethodInterceptor implements MethodInterceptor {
 		}
 		finally {
 			// Now log method exit.
-			profiler.logExit(methodInvocation.getThis().getClass(), methodName);
+			profiler.logExit(clazz, methodName);
 		}
 	}
 }

@@ -44,6 +44,7 @@ public class LoggingAppender implements ProfilerAppender {
 	 * i.e. what System.currentTimeMillis() returns.
 	 */
 	public void logEntry(String label, Class<?> clazz, String name, long entryTime) {
+        clazz = ClassUtil.getRealClass(clazz);
 		Logger log = LoggerFactory.getLogger(LOGGER_NAME);
 
 		// Get the identifier for this log entry.
@@ -71,6 +72,7 @@ public class LoggingAppender implements ProfilerAppender {
 	 * i.e. what System.currentTimeMillis() returns.
 	 */
 	public void logExit(String label, Class<?> clazz, String name, long exitTime) {
+        clazz = ClassUtil.getRealClass(clazz);
 		Logger log = LoggerFactory.getLogger(LOGGER_NAME);
 
 		// Descrease the indent for this log message.

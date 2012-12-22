@@ -81,6 +81,9 @@ long requests, controller actions and service method calls take."""
 			for (serviceClass in application.serviceClasses) {
 				String serviceName = serviceClass.propertyName
 				BeanConfiguration beanConfig = springConfig.getBeanConfig(serviceName)
+                if (!beanConfig) {
+                    continue
+                }
 
 				// If we're dealing with a TransactionProxyFactoryBean,
 				// then we can add the profiler method interceptor directly to it.
