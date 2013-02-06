@@ -37,7 +37,7 @@ public class ProfilerMethodInterceptor implements MethodInterceptor {
 		}
 
 		// Log method entry.
-        Class<?> clazz = ClassUtil.getRealClass(methodInvocation.getThis().getClass());
+		Class<?> clazz = ClassUtil.getRealClass(methodInvocation.getThis().getClass());
 		profiler.logEntry(clazz, methodName);
 
 		try {
