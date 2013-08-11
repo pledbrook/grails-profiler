@@ -1,0 +1,11 @@
+language: groovy
+jdk:
+  - openjdk6
+  - oraclejdk7
+branches:
+  only:
+    - master
+script: ./grailsw refresh-dependencies
+     && cd test/apps/default22
+     && ./grailsw refresh-dependencies
+     && ./grailsw "test-app functional:"
