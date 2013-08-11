@@ -166,9 +166,12 @@ long requests, controller actions and service method calls take."""
 
 		controller.metaClass.getProperty = { String propName ->
 			// Get the property.
-			def mp = delegate.getClass().metaClass.getMetaProperty(propName)
+			def targetMetaClass = delegate.getClass().metaClass
+			def mp = targetMetaClass.getMetaProperty(propName)
 			if (!mp) {
-				throw new MissingPropertyException(propName)
+				// probably a taglib or other property added via missing property on the metaclass,
+				// delegate to that since it won't be an action closure that we want to profile anyway
+				return targetMetaClass.invokeMissingProperty(delegate, propName, null, true)
 			}
 
 			def result = mp.getProperty(delegate)
