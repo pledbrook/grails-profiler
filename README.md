@@ -1,6 +1,6 @@
 # Profiler Plugin
 
-[![Build Status](https://travis-ci.org/tomdcc/grails-profiler.png)][6]
+[![Build Status](https://travis-ci.org/tomdcc/grails-profiler.png)][1]
 
 Investigating the performance of an application is an important step in improving its usability. The Profiler Plugin makes it easy to collect timing information for several aspects of an application:
 
