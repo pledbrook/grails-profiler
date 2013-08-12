@@ -4,3 +4,4 @@ target/
 /web-app/
 *.iml
 .idea/
+plugin.xml
