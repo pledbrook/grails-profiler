@@ -1,5 +1,7 @@
 # Profiler Plugin
 
+[![Build Status](https://travis-ci.org/tomdcc/grails-profiler.png)][6]
+
 Investigating the performance of an application is an important step in improving its usability. The Profiler Plugin makes it easy to collect timing information for several aspects of an application:
 
 * Requests
@@ -93,3 +95,4 @@ A special appender that stores its log messages in a buffer so that it can be re
  <tr><td><tt>getOutput()</tt></td><td>Returns the log output currently stored in this appender's buffer.</td></tr>
 </table>
 
+[1]:https://travis-ci.org/tomdcc/grails-profiler
