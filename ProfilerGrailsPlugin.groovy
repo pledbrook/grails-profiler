@@ -12,7 +12,7 @@ import org.springframework.aop.framework.ProxyFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 class ProfilerGrailsPlugin {
-	def version = "0.5"
+	def version = "0.6-SNAPSHOT"
 	def grailsVersion = "1.3.3 > *"
 	def loadAfter = ["services", "controllers"]
 	def title = "Profile Plugin"
