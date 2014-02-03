@@ -10,8 +10,9 @@ Investigating the performance of an application is an important step in improvin
 * View generation
 
 ## Installation
-
+```
 grails install-plugin profiler
+```
 
 ## How to use it
 
@@ -20,19 +21,21 @@ Once the plugin is installed, all you need to do to profile a request is add the
 http://localhost:8080/myapp/book/list?profiler=1
 
 You may not see any profiling information yet because it depends on your Log4J configuration. All profiling information is logged at the INFO level to the "com.linkedin.grails.ProfilerPlugin" logger, so this simple configuration will have the profiling messages appear in your console:
-
-    log4j {
+```groovy
+log4j {
+    ...
+    logger {
         ...
-        logger {
-            ...
-            com.linkedin.grails = "info"
-        }
-        ...
+        com.linkedin.grails = "info"
     }
+    ...
+}
+```
 
 It is also possible to place the profiling information in your HTML pages by using this GSP tag:
-
-    <g:profilerOutput />
+```xml
+<g:profilerOutput />
+```
 
 This will simply write out the profiling information collected so far for the current request. For best results it should be included in the layout inside an HTML comment. If you use it directly within a view, the profiling information will lack the timing for the view generation itself.
 
@@ -41,8 +44,9 @@ For more information, go to the [plugin portal page](http://grails.org/plugin/pr
 ### Disabling the profiler
 
 You can set a configuration option to completely disable the plugin:
-
-	grails.profiler.disable = true
+```groovy
+grails.profiler.disable = true
+```
 
 This is particularly useful on a per-environment basis, in case you don't want the impact of profiling in production or even development.
 
