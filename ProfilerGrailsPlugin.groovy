@@ -41,6 +41,8 @@ long requests, controller actions and service method calls take."""
 		if (disableProfiling) {
 			return
 		}
+		def scope = serviceClass.getPropertyValue("scope")
+		def lazyInit = serviceClass.hasProperty("lazyInit") ? serviceClass.getPropertyValue("lazyInit") : true
 
 		// First set up the appender that logs via Slf4j.
 		loggingAppender(LoggingAppender) { bean ->
@@ -106,7 +108,10 @@ long requests, controller actions and service method calls take."""
 					springConfig.addBeanConfiguration("${serviceName}Profiled", beanConfig)
 
 					// Now create the proxy factory bean and add the method interceptor to it.
-					"$serviceName"(ProxyFactoryBean) {
+					"$serviceName"(ProxyFactoryBean) {bean ->
+						if (scope) bean.scope = scope
+						bean.lazyInit = lazyInit
+						
 						// We don't want auto-detection of interfaces,
 						// otherwise Spring will just proxy the GroovyObject
 						// interface - not what we want!
