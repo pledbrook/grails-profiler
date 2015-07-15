@@ -41,8 +41,6 @@ long requests, controller actions and service method calls take."""
 		if (disableProfiling) {
 			return
 		}
-		def scope = serviceClass.getPropertyValue("scope")
-		def lazyInit = serviceClass.hasProperty("lazyInit") ? serviceClass.getPropertyValue("lazyInit") : true
 
 		// First set up the appender that logs via Slf4j.
 		loggingAppender(LoggingAppender) { bean ->
@@ -89,6 +87,8 @@ long requests, controller actions and service method calls take."""
 				if (!beanConfig) {
 					continue
 				}
+				def scope = serviceClass.getPropertyValue("scope")
+				def lazyInit = serviceClass.hasProperty("lazyInit") ? serviceClass.getPropertyValue("lazyInit") : true
 
 				// If we're dealing with a TransactionProxyFactoryBean,
 				// then we can add the profiler method interceptor directly to it.
