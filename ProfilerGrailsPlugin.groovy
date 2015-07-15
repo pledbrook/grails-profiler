@@ -87,6 +87,8 @@ long requests, controller actions and service method calls take."""
 				if (!beanConfig) {
 					continue
 				}
+				def scope = serviceClass.getPropertyValue("scope")
+				def lazyInit = serviceClass.hasProperty("lazyInit") ? serviceClass.getPropertyValue("lazyInit") : true
 
 				// If we're dealing with a TransactionProxyFactoryBean,
 				// then we can add the profiler method interceptor directly to it.
@@ -106,7 +108,10 @@ long requests, controller actions and service method calls take."""
 					springConfig.addBeanConfiguration("${serviceName}Profiled", beanConfig)
 
 					// Now create the proxy factory bean and add the method interceptor to it.
-					"$serviceName"(ProxyFactoryBean) {
+					"$serviceName"(ProxyFactoryBean) {bean ->
+						if (scope) bean.scope = scope
+						bean.lazyInit = lazyInit
+						
 						// We don't want auto-detection of interfaces,
 						// otherwise Spring will just proxy the GroovyObject
 						// interface - not what we want!
